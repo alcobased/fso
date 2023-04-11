@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "@powershell rm -Recurse -Force build && cd ../../part2/notes && npm run build && @powershell cp build -Recurse ../../part3/notes",
-    "deploy": "git add . && git commit -m uibuild && git push"
+    "deploy": "git add . && git commit -m uibuild && git push",
+    "deploy:full": "npm run build:ui && npm run deploy"
   },
   "author": "",
   "license": "ISC",
