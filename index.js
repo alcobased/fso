@@ -20,25 +20,21 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/api/notes', (request, response) => {
-  const body = request.body
-
-  if (!body.content) {
-    return response.status(400).json({ 
+app.post('/api/notes', (req, res) => {
+  const body = req.body
+  if (body.content === undefined) {
+    return res.status(400).json({ 
       error: 'content missing' 
     })
   }
-
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date(),
-    id: generateId(),
-  }
-
-  notes = notes.concat(note)
-
-  response.json(note)
+  })
+  note.save()
+    .then(savedNote => {
+      res.json(savedNote)
+    })
 })
 
 app.get('/api/notes', (req, res) => {
@@ -47,22 +43,18 @@ app.get('/api/notes', (req, res) => {
   })
 })
 
-app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
+app.delete('/api/notes/:id', (req, res) => {
+  const id = Number(req.params.id)
   notes = notes.filter(note => note.id !== id)
 
-  response.status(204).end()
+  res.status(204).end()
 })
 
-app.get('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const note = notes.find(note => note.id === id)
-
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
+app.get('/api/notes/:id', (req, res) => {
+  Note.findById(req.params.id)
+    .then(note => {
+      res.json(note)
+    })
 })
 
 const PORT = process.env.PORT
