@@ -9,17 +9,6 @@ app.use(express.static('build'))
 
 app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
-})
-
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-
 app.post('/api/notes', (req, res) => {
   const body = req.body
   if (body.content === undefined) {
@@ -41,13 +30,6 @@ app.get('/api/notes', (req, res) => {
   Note.find({}).then(notes => {
     res.json(notes)
   })
-})
-
-app.delete('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id)
-  notes = notes.filter(note => note.id !== id)
-
-  res.status(204).end()
 })
 
 app.get('/api/notes/:id', (req, res) => {
